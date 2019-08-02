@@ -188,20 +188,31 @@
       var loglink = document.querySelector(".login-link");
       var logpopup = document.querySelector(".modal-login");
       var close = document.querySelector(".modal-close");
-      var login = logpopup.querySelector("[name=login]");
-      var password = logpopup.querySelector("[name=password]");
       var maplink = document.querySelector(".footer-contacts > a");
       var mappopup = document.querySelector(".modal-map");
-      var form = logpopup.querySelector("form");
-      var storage = localStorage.getItem("login");
 
+      var login = logpopup.querySelector("[name=login]");
+      var password = logpopup.querySelector("[name=password]");
+      var form = logpopup.querySelector("form");
+
+      var isStorageSupport = true;
+      var storage = "";
+
+      try {
+        storage = localStorage.getItem("login");
+      } catch (e) {
+        isStorageSupport = false;
+      }
 
       loglink.addEventListener("click", function(evt) {
         evt.preventDefault();
         logpopup.classList.add("modal-show");
-        login.focus();
         if (storage) {
           login.value = storage;
+          password.focus();
+        }
+        else {
+          login.focus();
         }
       });
 
@@ -210,24 +221,34 @@
         logpopup.classList.remove("modal-show");
       });
 
+
       form.addEventListener("submit", function(evt){
         if (!login.value || !password.value){
           evt.preventDefault();
+          logpopup.classList.add("modal-error");
           console.log('Enter login and password');
         }
         else {
-          localStorage.setItem("login", login.value);
+          if (isStorageSupport) {
+            localStorage.setItem("login", login.value);
+          }
         }
       });
 
-      // maplink.addEventListener("click", function(evt){
-      //   evt.preventDefault();
-      //   mappopup.classList.add("modal-show");
-      // });
-      // close.addEventListener("click", function(evt) {
-      //   evt.preventDefault();
-      //   mappopup.classList.remove("modal-show");
-      // });
+      window.addEventListener("keydown", function (evt) {
+        if (evt.keyCode === 27) {
+          evt.preventDefault();
+          if (logpopup.classList.contains("modal-show")) {
+            logpopup.classList.remove("modal-show");
+          }
+        }
+      });
+
+
+      maplink.addEventListener("click", function(evt){
+        evt.preventDefault();
+        mappopup.classList.add("modal-show");
+      });
 
     </script>
   </body>
